@@ -5,6 +5,8 @@ These instructions use ASD-STE100 writing principles. Full dictionary compliance
 ## Before you start
 
 Ask your helper to connect your home devices.
+For the cloud service, no extra computer or hub is needed in your home.
+Your devices must stay connected to the home Wi-Fi and internet.
 Ask your helper to add your phone number.
 Get the Air Care WhatsApp contact from your helper.
 The default time zone is Singapore time.
@@ -116,6 +118,6 @@ For command help, send `HELP`.
 
 1. Check that the device has power.
 2. Check that the home internet connection works.
-3. Ask your helper to check the home gateway.
+3. Ask your helper to check the device connection to the service.
 
 Do not send passwords or access tokens in WhatsApp.

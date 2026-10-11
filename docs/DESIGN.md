@@ -1,5 +1,7 @@
 # Design and operating limits
 
+**Cloud update:** [CLOUD_SETUP.md](CLOUD_SETUP.md) defines the preferred no-home-hardware route. The report process can now poll an operator-hosted cloud Home Assistant instance over HTTPS. The local collector described below remains optional. The cloud integration host and live account connections are not yet deployed or verified.
+
 ## Deployment boundary
 
 This is a small, single-process pilot. Use one central server with persistent local SQLite storage, plus one collector per home. The collector makes outbound HTTPS requests. The home router needs no inbound port. Home Assistant must reach the appliances and any required vendor cloud. Internet access is required for WhatsApp.

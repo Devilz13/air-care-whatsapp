@@ -1,5 +1,7 @@
 # Air Care WhatsApp — pilot v0.1.0
 
+**Cloud hosting update:** The requested no-home-hardware deployment path is documented in [Cloud setup](docs/CLOUD_SETUP.md). `render.yaml` prepares the report service, and the new cloud poller reads a separately commissioned cloud integration host. **Not deployed yet.** 28 local tests pass. Vendor login and HJ10 cloud readings still need verification. The local gateway deployment below remains a legacy option, not a requirement of the proposed cloud mode.
+
 One scheduled WhatsApp report for household air readings, grouped by **home → room → device**. Users need only WhatsApp after a helper installs and connects the service.
 
 **Status:** implemented and locally tested pilot. Not deployed. Physical device access, Meta credentials, approved templates, real WhatsApp delivery, and HJ10 compatibility have not been tested. Do not describe this build as a working connection to the owner's appliances yet.
@@ -7,7 +9,7 @@ One scheduled WhatsApp report for household air readings, grouped by **home → 
 ## What it does
 
 - Collects mapped Home Assistant readings through a read-only REST adapter.
-- Uses an outbound HTTPS collector at each home; no inbound home-router port is needed.
+- Supports cloud-source polling from the report server. The legacy local mode uses an outbound HTTPS collector at each home.
 - Supports PM2.5, relative humidity, temperature, filter remaining, and tank-full status **where an integration exposes them**.
 - Sends one consolidated message per schedule, not one message per sensor change.
 - Accepts daily times, 2–24 hour intervals, quiet hours, status requests, home/room selection, and stop/start commands.
@@ -57,6 +59,7 @@ The test suite makes only loopback HTTP requests. It sends no real WhatsApp mess
 
 ## Documents
 
+- [Cloud setup](docs/CLOUD_SETUP.md): the preferred path for phone-only users with no extra home hardware.
 - [User instructions](docs/USER_GUIDE.md): short WhatsApp-only procedures, written using ASD-STE100 principles.
 - [Installer instructions](docs/INSTALLER_GUIDE.md): device mapping, tokens, Meta setup, and activation.
 - [Design and operating limits](docs/DESIGN.md).

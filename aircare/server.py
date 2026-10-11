@@ -5,10 +5,12 @@ import json
 import os
 import threading
 import time
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlparse
 from .core import Store
 from .transport import MetaSender
+from .cloud import from_environment
 
 
 class Application:
@@ -109,10 +111,23 @@ def handler(app):
 
 def main():
     os.umask(0o077)
-    store = Store(os.environ.get("AIRCARE_DB", "data/aircare.db"), recover=True)
+    database = os.environ.get("AIRCARE_DB", "data/aircare.db")
+    Path(database).parent.mkdir(parents=True, exist_ok=True)
+    store = Store(database, recover=True)
     sender = MetaSender()
     app = Application(store, os.environ["META_APP_SECRET"], os.environ["META_VERIFY_TOKEN"], sender.phone_id)
     stop = threading.Event()
+    cloud = from_environment(store)
+
+    def cloud_worker():
+        while not stop.is_set():
+            results = cloud.poll(time.time())
+            if not all(results):
+                print("Cloud collection failed. Check integration connection and source configuration.", flush=True)
+            stop.wait(60)
+
+    if cloud.sources:
+        threading.Thread(target=cloud_worker, daemon=True).start()
 
     def worker():
         while not stop.is_set():

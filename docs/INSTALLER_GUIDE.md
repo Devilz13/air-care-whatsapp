@@ -1,5 +1,7 @@
 # Air Care — installer instructions
 
+**For the requested cloud deployment, start with [CLOUD_SETUP.md](CLOUD_SETUP.md).** The procedures below describe the original local-gateway option. Do not require elderly users to install that hardware for the cloud route.
+
 Audience: the family helper or service operator. The elderly user uses only WhatsApp after setup.
 These procedures use ASD-STE100 writing principles. Full controlled-dictionary compliance is not certified.
 

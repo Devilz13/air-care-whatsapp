@@ -1,0 +1,18 @@
+[
+  {
+    "home": "home-a",
+    "ha_url": "https://REPLACE-WITH-CLOUD-INTEGRATION-HOST",
+    "token_env": "CLOUD_HA_TOKEN_HOME_A",
+    "devices": [
+      {
+        "id": "xiaomi-1",
+        "name": "Xiaomi 4 Lite",
+        "room": "Living room",
+        "metrics": {
+          "pm25": {"entity_id": "sensor.replace_with_actual_pm25_entity"},
+          "humidity": {"entity_id": "sensor.replace_with_actual_humidity_entity"}
+        }
+      }
+    ]
+  }
+]

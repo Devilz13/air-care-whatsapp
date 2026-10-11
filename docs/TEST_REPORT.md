@@ -1,5 +1,7 @@
 # Test report — 11 October 2026
 
+**Cloud update: 28 automated tests passed on Python 3.12.14.** Six additional tests in `tests/test_cloud.py` verify cloud-source configuration, HTTPS, token separation, household mapping, failure isolation, and unchanged freshness after a failed request. The original 22-test results below remain applicable. No Render deployment or actual vendor-cloud test has been performed.
+
 ## Result
 
 **22 automated tests passed** on Python 3.12.14. Command:
