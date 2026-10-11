@@ -1,0 +1,33 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync} from 'node:fs';
+import worker,{defaults,nextDue,scheduleCommand,handleUpdate,tick,report,route,send,validateSnapshot} from '../worker.mjs';
+const NOW=Date.parse('2026-10-11T00:00:00Z')/1000;
+function setup(){
+  const sql=new DatabaseSync(':memory:');sql.exec(readFileSync(new URL('../schema.sql',import.meta.url),'utf8'));
+  const DB={prepare(query){return {bind(...v){return {async first(){return sql.prepare(query).get(...v)||null;},async all(){return {results:sql.prepare(query).all(...v)};},async run(){const r=sql.prepare(query).run(...v);return {meta:{changes:Number(r.changes)}};}};}};}};
+  sql.prepare('INSERT INTO homes VALUES(?,?)').run('a','Home A');sql.prepare('INSERT INTO homes VALUES(?,?)').run('b','Hidden Home B');
+  sql.prepare('INSERT INTO users(chat,prefs) VALUES(?,?)').run('123',JSON.stringify(defaults()));sql.prepare('INSERT INTO access VALUES(?,?)').run('123','a');
+  const env={DB,TELEGRAM_ENABLED:'true',TELEGRAM_BOT_TOKEN:'123:FAKE',TELEGRAM_WEBHOOK_SECRET:'secret',AIRCARE_INGEST_TOKENS_JSON:JSON.stringify({a:'a'.repeat(32)})};
+  const sent=[],fetcher=async(url,opts)=>{sent.push(JSON.parse(opts.body));return Response.json({ok:true,result:{message_id:1}});};
+  const update=(text,id=1)=>({update_id:id,message:{chat:{id:123,type:'private'},from:{id:123},date:NOW,text}});
+  return {sql,env,sent,fetcher,update};
+}
+const snapshot=(value=12,at=NOW)=>({devices:[{id:'p',name:'Purifier',room:'Living room',metrics:{pm25:{value,observed_at:at}}}]});
+const post=(path,body,headers={})=>new Request('https://example.workers.dev'+path,{method:'POST',headers,body:JSON.stringify(body)});
+test('daily schedules and quiet interval',()=>{const p=defaults();assert.equal(nextDue(p,NOW-60),NOW);p.mode='interval';assert.equal(nextDue(p,NOW+12*3600),NOW+86400);});
+test('invalid schedules cannot alter original',()=>{const p=defaults();assert.throws(()=>scheduleCommand('EVERY 1 HOURS',p));assert.throws(()=>scheduleCommand('DAILY 25:00',p));assert.deepEqual(p,defaults());});
+test('webhook rejects missing secret and group messages',async()=>{const x=setup();assert.equal((await route(post('/telegram',x.update('START')),x.env,NOW,x.fetcher)).status,403);const u=x.update('START');u.message.chat.type='group';await handleUpdate(x.env,u,NOW,x.fetcher);assert.equal(x.sent.length,0);x.sql.close();});
+test('unknown user cannot receive household data',async()=>{const x=setup(),u=x.update('STATUS');u.message.chat.id=456;u.message.from.id=456;await handleUpdate(x.env,u,NOW,x.fetcher);assert.equal(x.sent.length,0);x.sql.close();});
+test('duplicate webhook does not send twice',async()=>{const x=setup();await handleUpdate(x.env,x.update('/start'),NOW,x.fetcher);await handleUpdate(x.env,x.update('/start'),NOW,x.fetcher);assert.equal(x.sent.length,1);assert.equal(x.sql.prepare('SELECT active FROM users').get().active,1);x.sql.close();});
+test('private access and home selection',async()=>{const x=setup();await handleUpdate(x.env,x.update('HOME b'),NOW,x.fetcher);assert.match(x.sent[0].text,/not available/);assert.doesNotMatch(await report(x.env.DB,'123',NOW),/Hidden/);x.sql.close();});
+test('source token determines home and refuses bad values',async()=>{const x=setup(),data={...snapshot(),home:'b'},headers={Authorization:'Bearer '+'a'.repeat(32)};assert.equal((await route(post('/v1/readings',data,headers),x.env,NOW,x.fetcher)).status,200);assert.equal(x.sql.prepare('SELECT home FROM snapshots').get().home,'a');assert.equal((await route(post('/v1/readings',snapshot(-2),headers),x.env,NOW)).status,400);x.sql.close();});
+test('old data is not presented as current',async()=>{const x=setup();x.sql.prepare('INSERT INTO snapshots VALUES(?,?,?)').run('a',JSON.stringify(snapshot(12,NOW-901)),NOW);assert.match(await report(x.env.DB,'123',NOW),/Old data/);assert.doesNotMatch(await report(x.env.DB,'123',NOW),/12 ug/);x.sql.close();});
+test('scheduler is idempotent and respects STOP',async()=>{const x=setup();x.sql.prepare('UPDATE users SET active=1,due=?').run(NOW);await Promise.all([tick(x.env,NOW,x.fetcher),tick(x.env,NOW,x.fetcher)]);assert.equal(x.sent.length,1);await handleUpdate(x.env,x.update('STOP'),NOW,x.fetcher);await tick(x.env,NOW+86400,x.fetcher);assert.equal(x.sent.length,2);x.sql.close();});
+test('missed schedule is skipped without backlog',async()=>{const x=setup();x.sql.prepare('UPDATE users SET active=1,due=?').run(NOW-600);await tick(x.env,NOW,x.fetcher);assert.equal(x.sent.length,0);x.sql.close();});
+test('uncertain send is not automatically repeated',async()=>{const x=setup();let attempts=0;const fail=async()=>{attempts++;throw Error('timeout');};await handleUpdate(x.env,x.update('STATUS'),NOW,fail);await handleUpdate(x.env,x.update('STATUS'),NOW,fail);assert.equal(attempts,1);assert.equal(x.sql.prepare('SELECT state FROM events').get().state,'unknown');x.sql.close();});
+test('paid broadcast is explicitly off; sending defaults off',async()=>{const x=setup();await send(x.env,'123','Report',x.fetcher);assert.equal(x.sent[0].allow_paid_broadcast,false);delete x.env.TELEGRAM_ENABLED;assert.equal(await send(x.env,'123','Report',x.fetcher),false);assert.equal(x.sent.length,1);x.sql.close();});
+test('STOP is processed despite command rate cap',async()=>{const x=setup();for(let i=1;i<10;i++)await handleUpdate(x.env,x.update('STATUS',i),NOW,x.fetcher);await handleUpdate(x.env,x.update('STOP',20),NOW,x.fetcher);assert.equal(x.sql.prepare('SELECT active FROM users').get().active,0);assert.equal(x.sent.length,6);x.sql.close();});
+test('worker entrypoint receives context without using it as timestamp',async()=>{const x=setup();assert.equal((await worker.fetch(new Request('https://x/healthz'),x.env,{})).status,200);x.sql.close();});
+test('future and nonnumeric readings rejected',()=>{assert.throws(()=>validateSnapshot(snapshot(true),NOW));assert.throws(()=>validateSnapshot(snapshot(12,NOW+61),NOW));});

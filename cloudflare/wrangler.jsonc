@@ -1,0 +1,14 @@
+{
+  "name": "air-care-telegram",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "triggers": {"crons": ["* * * * *"]},
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "air-care-telegram",
+    "database_id": "REPLACE_WITH_CREATED_D1_ID"
+  }],
+  "vars": {"TELEGRAM_ENABLED": "false"},
+  "observability": {"enabled": false}
+}

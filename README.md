@@ -1,4 +1,16 @@
-# Air Care WhatsApp — pilot v0.1.0
+# Air Care — Telegram first, WhatsApp future
+
+**Start here: [Project aim, completed work, and remaining tasks](docs/PROJECT_STATUS.md).**
+
+Current direction: a **free**, phone-based service for elderly users, with no extra home hardware or router changes. Telegram is the approved first channel. WhatsApp remains a future researched option. The repository name is retained for continuity.
+
+- [Telegram/Cloudflare prototype and setup](cloudflare/README.md)
+- [Future free WhatsApp research](docs/WHATSAPP_FUTURE.md)
+- **Progress:** 28 Python tests passed; 15 new serverless tests passed locally.
+- **Deployment:** none. No paid service has been created.
+- **Main blocker:** a verified, free vendor-cloud connector for the actual Dyson and Xiaomi units. The Telegram Worker accepts readings but does not obtain them from vendor accounts itself.
+
+The sections below describe the original Python/WhatsApp prototype and its historical deployment proposals. They do not mean that a live free service is ready.
 
 **Current requirement: free only. Deployment is blocked.** The paid Render manifest has been removed. The current SQLite and in-process scheduler must not be deployed on Render Free as a reliable service. Read [Free-only constraints](docs/FREE_ONLY.md) before using the earlier deployment instructions. No cloud service or live messaging has been enabled.
 

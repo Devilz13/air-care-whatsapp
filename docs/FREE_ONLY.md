@@ -1,5 +1,7 @@
 # Free-only deployment constraint
 
+**Update:** Telegram is now approved as the primary channel. A Cloudflare Worker/D1 prototype is in `cloudflare/`. No resources have been provisioned. See `PROJECT_STATUS.md` for the current plan and `WHATSAPP_FUTURE.md` for the newly identified bounded WhatsApp service-message allowance.
+
 Confirmed by the owner on 11 October 2026: the service must remain free.
 
 No paid compute, disks, databases, messaging, or automatic upgrades are authorized. Render workspace `My Workspace` is approved for use, subject to this limit. No Render services have been created by this project.
