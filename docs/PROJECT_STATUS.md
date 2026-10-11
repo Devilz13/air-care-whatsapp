@@ -1,6 +1,8 @@
 # Air Care — aim, progress, and remaining work
 
-Last updated: 11 October 2026, Singapore time.
+Last updated: 12 October 2026, Singapore time.
+
+Latest owner direction: use Telegram BotFather now. See [phone setup instructions](BOTFATHER_SETUP.md). Bot creation, a securely configured token, free cloud deployment, and live device connections are still pending. No online preview or bot deployment has been created.
 
 ## Aim
 
