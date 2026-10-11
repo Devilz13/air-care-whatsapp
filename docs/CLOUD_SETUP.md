@@ -1,5 +1,7 @@
 # Cloud hosting — no computer or hub in the home
 
+**Superseded deployment proposal:** The owner now requires a free service. The paid `render.yaml` mentioned below has been removed. Do not follow the paid deployment steps. See [FREE_ONLY.md](FREE_ONLY.md) for current blockers and constraints. The architecture remains a proposal, not a live service.
+
 ## Status
 
 The report service has a Render deployment definition and an in-process cloud-source poller. **It has not been deployed.** The Render account is not connected yet. Cloud device integrations and account authorization still require commissioning. The Render file provisions the report service only; it does not provision Home Assistant or implement direct vendor login.

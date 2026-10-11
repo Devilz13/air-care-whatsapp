@@ -1,6 +1,8 @@
 # Air Care WhatsApp — pilot v0.1.0
 
-**Cloud hosting update:** The requested no-home-hardware deployment path is documented in [Cloud setup](docs/CLOUD_SETUP.md). `render.yaml` prepares the report service, and the new cloud poller reads a separately commissioned cloud integration host. **Not deployed yet.** 28 local tests pass. Vendor login and HJ10 cloud readings still need verification. The local gateway deployment below remains a legacy option, not a requirement of the proposed cloud mode.
+**Current requirement: free only. Deployment is blocked.** The paid Render manifest has been removed. The current SQLite and in-process scheduler must not be deployed on Render Free as a reliable service. Read [Free-only constraints](docs/FREE_ONLY.md) before using the earlier deployment instructions. No cloud service or live messaging has been enabled.
+
+**Cloud hosting design:** The no-home-hardware path is documented in [Cloud setup](docs/CLOUD_SETUP.md). Its paid deployment proposal is now withdrawn. The cloud poller reads a separately commissioned cloud integration host. **Not deployed yet.** 28 local tests passed. Vendor login and HJ10 cloud readings still need verification. The local gateway deployment below remains a legacy option, not a requirement of the proposed cloud mode.
 
 One scheduled WhatsApp report for household air readings, grouped by **home → room → device**. Users need only WhatsApp after a helper installs and connects the service.
 
