@@ -1,0 +1,7 @@
+.git
+.env
+collector.json
+data
+*.db*
+__pycache__
+tests

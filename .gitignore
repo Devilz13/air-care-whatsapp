@@ -1,0 +1,10 @@
+.env
+collector.json
+*.db
+*.db-shm
+*.db-wal
+data/
+__pycache__/
+*.pyc
+.venv/
+test-output.txt

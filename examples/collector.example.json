@@ -1,0 +1,80 @@
+{
+  "ha_url": "http://homeassistant.local:8123",
+  "server_url": "https://REPLACE-WITH-YOUR-DOMAIN",
+  "devices": [
+    {
+      "id": "dyson-1",
+      "name": "Dyson HJ10 1",
+      "room": "Living room",
+      "metrics": {
+        "pm25": {
+          "entity_id": "sensor.replace_dyson_1_pm25"
+        }
+      }
+    },
+    {
+      "id": "dyson-2",
+      "name": "Dyson HJ10 2",
+      "room": "Bedroom",
+      "metrics": {
+        "pm25": {
+          "entity_id": "sensor.replace_dyson_2_pm25"
+        }
+      }
+    },
+    {
+      "id": "xiaomi-1",
+      "name": "Xiaomi 4 Lite 1",
+      "room": "Living room",
+      "metrics": {
+        "pm25": {
+          "entity_id": "sensor.replace_xiaomi_1_pm25"
+        },
+        "humidity": {
+          "entity_id": "sensor.replace_xiaomi_1_humidity"
+        },
+        "temperature": {
+          "entity_id": "sensor.replace_xiaomi_1_temperature"
+        },
+        "filter": {
+          "entity_id": "sensor.replace_xiaomi_1_filter"
+        }
+      }
+    },
+    {
+      "id": "xiaomi-2",
+      "name": "Xiaomi 4 Lite 2",
+      "room": "Bedroom",
+      "metrics": {
+        "pm25": {
+          "entity_id": "sensor.replace_xiaomi_2_pm25"
+        },
+        "humidity": {
+          "entity_id": "sensor.replace_xiaomi_2_humidity"
+        },
+        "temperature": {
+          "entity_id": "sensor.replace_xiaomi_2_temperature"
+        },
+        "filter": {
+          "entity_id": "sensor.replace_xiaomi_2_filter"
+        }
+      }
+    },
+    {
+      "id": "dehumidifier-1",
+      "name": "Xiaomi Dehumidifier Lite",
+      "room": "Bedroom",
+      "metrics": {
+        "humidity": {
+          "entity_id": "sensor.replace_dehumidifier_1_humidity"
+        },
+        "temperature": {
+          "entity_id": "sensor.replace_dehumidifier_1_temperature"
+        },
+        "tank_full": {
+          "entity_id": "binary_sensor.replace_dehumidifier_1_tank_full"
+        }
+      }
+    }
+  ]
+}

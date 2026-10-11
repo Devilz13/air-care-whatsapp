@@ -1,0 +1,22 @@
+[Unit]
+Description=Air Care home collector
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=aircare
+Group=aircare
+WorkingDirectory=/opt/air-care-whatsapp
+EnvironmentFile=/etc/aircare-collector.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/usr/bin/python3 -m aircare.collector /opt/air-care-whatsapp/collector.json
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

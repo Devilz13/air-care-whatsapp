@@ -1,0 +1,14 @@
+{
+  "name": "air_care_report",
+  "language": "en_US",
+  "category": "UTILITY",
+  "components": [
+    {
+      "type": "BODY",
+      "text": "Your requested home device report: {{1}} Reply STATUS for details. Reply STOP to stop scheduled reports.",
+      "example": {
+        "body_text": [["Home A | Living room | PM2.5: 12 ug/m3 | Humidity: 58% | Updated 1 minute ago"]]
+      }
+    }
+  ]
+}

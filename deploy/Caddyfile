@@ -1,0 +1,6 @@
+{$AIRCARE_DOMAIN} {
+    request_body {
+        max_size 256KB
+    }
+    reverse_proxy app:8080
+}
